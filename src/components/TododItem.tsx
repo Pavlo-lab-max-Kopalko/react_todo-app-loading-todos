@@ -1,14 +1,24 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React from 'react';
+import React, { useEffect } from 'react';
 import cn from 'classnames';
 import { Todo } from '../types/Todo';
 
 interface Props {
   todos: Todo[];
+  setCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const TodoItem = ({ todos }: Props) => {
+export const TodoItem = ({ todos, setCount }: Props) => {
+  useEffect(() => {
+    todos.forEach(todo => {
+      if (!todo.completed) {
+        setCount(currentCount => currentCount + 1);
+      }
+    });
+  }, [todos, setCount]);
+
+
   return (
     <section className="todoapp__main" data-cy="TodoList">
       {todos.map(todo => (

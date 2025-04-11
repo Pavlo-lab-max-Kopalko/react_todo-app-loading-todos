@@ -15,6 +15,7 @@ export const App: React.FC = () => {
     ErrorMessage.DEFAULT,
   );
   const [loading, setLoading] = useState<boolean>(true);
+  const [count, setCount] = useState<number>(0);
 
   console.log(unableErrorMessage);
 
@@ -42,8 +43,11 @@ export const App: React.FC = () => {
     setUnableErrorMessage(ErrorMessage.DEFAULT);
   };
 
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  // };
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setUnableErrorMessage(ErrorMessage.DEFAULT);
+  };
 
   return (
     <div className="todoapp">
@@ -59,7 +63,7 @@ export const App: React.FC = () => {
           />
 
           {/* Add a todo on form submit */}
-          <form>
+          <form onSubmit={handleSubmit}>
             <input
               data-cy="NewTodoField"
               type="text"
@@ -69,14 +73,14 @@ export const App: React.FC = () => {
           </form>
         </header>
 
-        <TodoItem todos={todos} />
+        <TodoItem todos={todos} setCount={setCount} />
 
         {/* Hide the footer if there are no todos */}
 
         {todos.length > 0 && (
           <footer className="todoapp__footer" data-cy="Footer">
             <span className="todo-count" data-cy="TodosCounter">
-              3 items left
+              {count} items left
             </span>
 
             {/* Active link should have the 'selected' class */}
