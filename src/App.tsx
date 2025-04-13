@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { getTodos, USER_ID } from './api/todos';
-import { ErrorMessage, Todo } from './types/Todo';
+import { ErrorMessage, FilteredStatus, Todo } from './types/Todo';
 import { TodoItem } from './components/TododItem';
 import cn from 'classnames';
 
@@ -14,10 +14,11 @@ export const App: React.FC = () => {
   const [unableErrorMessage, setUnableErrorMessage] = useState<ErrorMessage>(
     ErrorMessage.DEFAULT,
   );
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [loading, setLoading] = useState<boolean>(true);
   const [count, setCount] = useState<number>(0);
-
-  console.log(unableErrorMessage);
+  const [filterValue, setFilterValue] = useState<FilteredStatus>(
+    FilteredStatus.ALL,
+  );
 
   useEffect(() => {
     getTodos()
@@ -29,11 +30,9 @@ export const App: React.FC = () => {
         setTimeout(() => {
           setUnableErrorMessage(ErrorMessage.DEFAULT);
         }, 3000);
-      })
-      .finally(() => setLoading(false));
+      });
+    // .finally(() => setLoading(false));
   }, []);
-
-  console.log(todos);
 
   if (!USER_ID) {
     return <UserWarning />;
@@ -73,7 +72,7 @@ export const App: React.FC = () => {
           </form>
         </header>
 
-        <TodoItem todos={todos} setCount={setCount} />
+        <TodoItem todos={todos} setCount={setCount} filterValue={filterValue} />
 
         {/* Hide the footer if there are no todos */}
 
@@ -87,24 +86,27 @@ export const App: React.FC = () => {
             <nav className="filter" data-cy="Filter">
               <a
                 href="#/"
-                className="filter__link selected"
+                className={`filter__link ${filterValue === FilteredStatus.ALL ? 'selected' : ''}`}
                 data-cy="FilterLinkAll"
+                onClick={() => setFilterValue(FilteredStatus.ALL)}
               >
                 All
               </a>
 
               <a
                 href="#/active"
-                className="filter__link"
+                className={`filter__link ${filterValue === FilteredStatus.ACTIVE ? 'selected' : ''}`}
                 data-cy="FilterLinkActive"
+                onClick={() => setFilterValue(FilteredStatus.ACTIVE)}
               >
                 Active
               </a>
 
               <a
                 href="#/completed"
-                className="filter__link"
+                className={`filter__link ${filterValue === FilteredStatus.COMPLETED ? 'selected' : ''}`}
                 data-cy="FilterLinkCompleted"
+                onClick={() => setFilterValue(FilteredStatus.COMPLETED)}
               >
                 Completed
               </a>
