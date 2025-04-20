@@ -6,15 +6,14 @@ import { getTodos, USER_ID } from './api/todos';
 import { ErrorMessage, FilteredStatus, Todo } from './types/Todo';
 import { TodoItem } from './components/TododItem';
 import cn from 'classnames';
-
-// console.log(USER_ID);
+import { FormAddTodo } from './components/FormAddTodo';
+import { Footer } from './components/Footer';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [unableErrorMessage, setUnableErrorMessage] = useState<ErrorMessage>(
     ErrorMessage.DEFAULT,
   );
-  // const [loading, setLoading] = useState<boolean>(true);
   const [count, setCount] = useState<number>(0);
   const [filterValue, setFilterValue] = useState<FilteredStatus>(
     FilteredStatus.ALL,
@@ -31,7 +30,6 @@ export const App: React.FC = () => {
           setUnableErrorMessage(ErrorMessage.DEFAULT);
         }, 3000);
       });
-    // .finally(() => setLoading(false));
   }, []);
 
   if (!USER_ID) {
@@ -62,14 +60,7 @@ export const App: React.FC = () => {
           />
 
           {/* Add a todo on form submit */}
-          <form onSubmit={handleSubmit}>
-            <input
-              data-cy="NewTodoField"
-              type="text"
-              className="todoapp__new-todo"
-              placeholder="What needs to be done?"
-            />
-          </form>
+          <FormAddTodo onSubmit={handleSubmit} />
         </header>
 
         <TodoItem todos={todos} setCount={setCount} filterValue={filterValue} />
@@ -77,50 +68,11 @@ export const App: React.FC = () => {
         {/* Hide the footer if there are no todos */}
 
         {todos.length > 0 && (
-          <footer className="todoapp__footer" data-cy="Footer">
-            <span className="todo-count" data-cy="TodosCounter">
-              {count} items left
-            </span>
-
-            {/* Active link should have the 'selected' class */}
-            <nav className="filter" data-cy="Filter">
-              <a
-                href="#/"
-                className={`filter__link ${filterValue === FilteredStatus.ALL ? 'selected' : ''}`}
-                data-cy="FilterLinkAll"
-                onClick={() => setFilterValue(FilteredStatus.ALL)}
-              >
-                All
-              </a>
-
-              <a
-                href="#/active"
-                className={`filter__link ${filterValue === FilteredStatus.ACTIVE ? 'selected' : ''}`}
-                data-cy="FilterLinkActive"
-                onClick={() => setFilterValue(FilteredStatus.ACTIVE)}
-              >
-                Active
-              </a>
-
-              <a
-                href="#/completed"
-                className={`filter__link ${filterValue === FilteredStatus.COMPLETED ? 'selected' : ''}`}
-                data-cy="FilterLinkCompleted"
-                onClick={() => setFilterValue(FilteredStatus.COMPLETED)}
-              >
-                Completed
-              </a>
-            </nav>
-
-            {/* this button should be disabled if there are no completed todos */}
-            <button
-              type="button"
-              className="todoapp__clear-completed"
-              data-cy="ClearCompletedButton"
-            >
-              Clear completed
-            </button>
-          </footer>
+          <Footer
+            count={count}
+            filterValue={filterValue}
+            setFilterValue={setFilterValue}
+          />
         )}
       </div>
 
